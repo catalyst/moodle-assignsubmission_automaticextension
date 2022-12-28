@@ -24,8 +24,49 @@
  */
 
 /**
- * This is the custom hook that prints the request extention button on the assign page.
+ * This is the custom hook that creates and returns the request extention button html.
+ *
+ * @param assign_submission_status $status
+ * @return string
  */
-function local_automaticextension_print_request_button() {
-    
+function local_automaticextension_get_request_button(assign_submission_status $status) {
+    global $OUTPUT;
+
+    $canrequestextension = local_automaticextension_can_request_extension($status->duedate, $status->extensionduedate);
+    if (!$canrequestextension) {
+        return '';
+    }
+
+    $o  = $OUTPUT->box_start('requestextension', null, ['style' => 'text-align:center']);
+    $url = new moodle_url('/local/automaticextension/request.php', ['cmid' => $status->coursemoduleid]);
+    $o .= $OUTPUT->single_button($url, get_string('requestextension', 'local_automaticextension'), 'get');
+    $o .= $OUTPUT->box_end();
+
+    return $o;
+}
+
+/**
+ * Check if the use is able to request an extension.
+ *
+ * @param integer $duedate the due date
+ * @param integer $extensionduedate the extension due date
+ * @return boolean
+ */
+function local_automaticextension_can_request_extension($duedate, $extensionduedate) {
+    $config = get_config('local_automaticextension');
+    $now = time();
+
+    if ($config->extensionlength > 0) {
+        if ($duedate > $now) {
+            return true;
+        } else if ($config->maximumrequests > 1 && $extensionduedate > 0) {
+            $maximumextensionlength = $config->maximumrequests * $config->extensionlength * 3600;
+            $maximumextension = $duedate + $maximumextensionlength;
+            if ($maximumextension > $extensionduedate) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

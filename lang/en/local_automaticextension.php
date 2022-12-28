@@ -24,6 +24,7 @@
  */
 
 $string['pluginname'] = 'Automatic extension';
+$string['requestextension'] = 'Request extension';
 $string['settings:conditions'] = 'Condition details';
 $string['settings:conditions_help'] = 'The extension condition details to be shown to students when they request an extension';
 $string['settings:extensionlength'] = 'Extension length (hours)';
