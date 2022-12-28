@@ -24,3 +24,9 @@
  */
 
 $string['pluginname'] = 'Automatic extension';
+$string['settings:conditions'] = 'Condition details';
+$string['settings:conditions_help'] = 'The extension condition details to be shown to students when they request an extension';
+$string['settings:extensionlength'] = 'Extension length (hours)';
+$string['settings:extensionlength_help'] = 'The extension length in hours';
+$string['settings:maximumrequests'] = 'Maximum requests';
+$string['settings:maximumrequests_help'] = 'The maximum requests that can be made';

@@ -26,5 +26,18 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $ADMIN->add('localplugins', new admin_category('automaticextension', get_string('pluginname', 'local_automaticextension')));
+    $settings = new admin_settingpage('local_automaticextension', get_string('pluginname', 'local_automaticextension'));
+    $ADMIN->add('localplugins', $settings);
+
+    $name = new lang_string('settings:conditions', 'local_automaticextension');
+    $description = new lang_string('settings:conditions_help', 'local_automaticextension');
+    $settings->add(new admin_setting_confightmleditor('local_automaticextension/conditions', $name, $description, '', PARAM_RAW));
+
+    $name = new lang_string('settings:maximumrequests', 'local_automaticextension');
+    $description = new lang_string('settings:maximumrequests_help', 'local_automaticextension');
+    $settings->add(new admin_setting_configtext('local_automaticextension/maximumrequests', $name, $description, 1, PARAM_INT));
+
+    $name = new lang_string('settings:extensionlength', 'local_automaticextension');
+    $description = new lang_string('settings:extensionlength_help', 'local_automaticextension');
+    $settings->add(new admin_setting_configtext('local_automaticextension/extensionlength', $name, $description, 24, PARAM_INT));
 }
