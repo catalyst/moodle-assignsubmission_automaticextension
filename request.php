@@ -24,10 +24,47 @@
  */
 
 require_once("../../config.php");
+require_once($CFG->dirroot . "/local/automaticextension/lib.php");
+require_once($CFG->dirroot . "/mod/assign/locallib.php");
 
 $cmid = required_param('cmid', PARAM_INT);
+$confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'assign');
 
 require_login($course, true, $cm);
 
+$context = context_module::instance($cm->id);
+
+require_capability('mod/assign:view', $context);
+
+$returnurl = new \moodle_url('/mod/assign/view.php', array('cmid' => $cmid));
+
+$assign = new \assign($context, $cm, $course);
+$instance = $assign->get_instance();
+$canview = $assign->can_view_submission($USER->id);
+$canedit = $assign->submissions_open($USER->id) && $assign->is_any_submission_plugin_enabled();
+$duedate = $instance->duedate;
+$extensionduedate = null;
+if ($flags) {
+    $extensionduedate = $flags->extensionduedate;
+}
+$canrequestextension = local_automaticextension_can_request_extension($duedate, $extensionduedate);
+if (!$canview || !$canedit || !$canrequestextension) {
+    \core\notification::warning(get_string('unabletorequest', 'local_automaticextension'));
+    redirect($returnurl);
+}
+
+$pageurl = new \moodle_url('/local/automaticextension/request.php', array('cmid' => $cmid));
+$title = get_string('extensionrequest', 'local_automaticextension');
+$PAGE->set_url($pageurl);
+$PAGE->set_title($title);
+$PAGE->set_heading($course->fullname);
+
+// Print page HTML.
+echo $OUTPUT->header();
+
+$renderer = $PAGE->get_renderer('local_automaticextension');
+echo $renderer->render_request_page($assign);
+
+echo $OUTPUT->footer();

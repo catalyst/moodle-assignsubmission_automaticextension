@@ -30,19 +30,15 @@
  * @return string
  */
 function local_automaticextension_get_request_button(assign_submission_status $status) {
-    global $OUTPUT;
+    global $PAGE;
 
     $canrequestextension = local_automaticextension_can_request_extension($status->duedate, $status->extensionduedate);
     if (!$canrequestextension) {
         return '';
     }
 
-    $o  = $OUTPUT->box_start('requestextension', null, ['style' => 'text-align:center']);
-    $url = new moodle_url('/local/automaticextension/request.php', ['cmid' => $status->coursemoduleid]);
-    $o .= $OUTPUT->single_button($url, get_string('requestextension', 'local_automaticextension'), 'get');
-    $o .= $OUTPUT->box_end();
-
-    return $o;
+    $renderer = $PAGE->get_renderer('local_automaticextension');
+    return $renderer->render_request_button($status->coursemoduleid);
 }
 
 /**

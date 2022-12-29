@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['accept'] = 'Accept automatic extension';
+$string['cancel'] = 'Cancel';
+$string['extensionrequest'] = 'Extension Request';
 $string['pluginname'] = 'Automatic extension';
 $string['requestextension'] = 'Request extension';
 $string['settings:conditions'] = 'Condition details';
@@ -31,3 +34,4 @@ $string['settings:extensionlength'] = 'Extension length (hours)';
 $string['settings:extensionlength_help'] = 'The extension length in hours';
 $string['settings:maximumrequests'] = 'Maximum requests';
 $string['settings:maximumrequests_help'] = 'The maximum requests that can be made';
+$string['unabletorequest'] = 'An automatic extension cannot be requested right now. Please contact your instructor for a manual request.';
