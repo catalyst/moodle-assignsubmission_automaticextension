@@ -79,7 +79,7 @@ class local_automaticextension_renderer extends plugin_renderer_base {
 
         // Header.
         $html .= $this->output->box_start('modal-header p-x-1', 'modal-header');
-        $html .= html_writer::tag('h4', get_string('extensionrequest', 'local_automaticextension'));
+        $html .= html_writer::tag('h3', get_string('extensionrequest', 'local_automaticextension'));
         $html .= $this->output->box_end();
 
         // Body.
