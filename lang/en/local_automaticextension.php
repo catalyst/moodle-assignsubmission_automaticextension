@@ -25,9 +25,13 @@
 
 $string['accept'] = 'Accept automatic extension';
 $string['cancel'] = 'Cancel';
+$string['event_automatic_extension_applied'] = 'Automatic extension applied';
+$string['event_automatic_extension_applied_desc'] = 'The user with \'{$a->userid}\' has applied an automatic extension for course module id \'{$a->contextinstanceid}\', extension date is {$a->extensionduedate}.';
 $string['extensionrequest'] = 'Extension Request';
 $string['pluginname'] = 'Automatic extension';
+$string['requesterror'] = 'There was an issue applying your automatic extension, please contact your instructor.';
 $string['requestextension'] = 'Request extension';
+$string['requestsuccess'] = 'Your automatic extension has been applied. Your new due date is {$a}.';
 $string['settings:conditions'] = 'Condition details';
 $string['settings:conditions_help'] = 'The extension condition details to be shown to students when they request an extension';
 $string['settings:extensionlength'] = 'Extension length (hours)';

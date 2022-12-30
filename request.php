@@ -38,20 +38,27 @@ $context = context_module::instance($cm->id);
 
 require_capability('mod/assign:view', $context);
 
-$returnurl = new \moodle_url('/mod/assign/view.php', array('cmid' => $cmid));
+$returnurl = new \moodle_url('/mod/assign/view.php', array('id' => $cmid));
 
+$userid = $USER->id;
 $assign = new \assign($context, $cm, $course);
-$instance = $assign->get_instance();
-$canview = $assign->can_view_submission($USER->id);
-$canedit = $assign->submissions_open($USER->id) && $assign->is_any_submission_plugin_enabled();
-$duedate = $instance->duedate;
-$extensionduedate = null;
-if ($flags) {
-    $extensionduedate = $flags->extensionduedate;
-}
-$canrequestextension = local_automaticextension_can_request_extension($duedate, $extensionduedate);
+$canview = $assign->can_view_submission($userid);
+$canedit = $assign->submissions_open($userid) && $assign->is_any_submission_plugin_enabled();
+$automaticextension = new \local_automaticextension\automaticextension($assign, $userid);
+$canrequestextension = $automaticextension->can_request_extension();
 if (!$canview || !$canedit || !$canrequestextension) {
     \core\notification::warning(get_string('unabletorequest', 'local_automaticextension'));
+    redirect($returnurl);
+}
+
+if (data_submitted() && $confirm && confirm_sesskey()) {
+    if ($automaticextension->apply_extension($assign, $userid)) {
+        $newduedate = $automaticextension->get_user_extension_due_date();
+        \core\notification::success(get_string('requestsuccess', 'local_automaticextension', $newduedate));
+    } else {
+        \core\notification::error(get_string('requesterror', 'local_automaticextension'));
+    }
+
     redirect($returnurl);
 }
 

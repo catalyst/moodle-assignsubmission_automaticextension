@@ -29,40 +29,20 @@
  * @param assign_submission_status $status
  * @return string
  */
-function local_automaticextension_get_request_button(assign_submission_status $status) {
-    global $PAGE;
+function local_automaticextension_get_request_button($cmid) {
+    global $PAGE, $USER;
 
-    $canrequestextension = local_automaticextension_can_request_extension($status->duedate, $status->extensionduedate);
+    list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'assign');
+    $context = context_module::instance($cm->id);
+
+    $assign = new \assign($context, $cm, $course);
+    $userid = $USER->id;
+    $automaticextension = new local_automaticextension\automaticextension($assign, $userid);
+    $canrequestextension = $automaticextension->can_request_extension();
     if (!$canrequestextension) {
         return '';
     }
 
     $renderer = $PAGE->get_renderer('local_automaticextension');
-    return $renderer->render_request_button($status->coursemoduleid);
-}
-
-/**
- * Check if the use is able to request an extension.
- *
- * @param integer $duedate the due date
- * @param integer $extensionduedate the extension due date
- * @return boolean
- */
-function local_automaticextension_can_request_extension($duedate, $extensionduedate) {
-    $config = get_config('local_automaticextension');
-    $now = time();
-
-    if ($config->extensionlength > 0) {
-        if ($duedate > $now) {
-            return true;
-        } else if ($config->maximumrequests > 1 && $extensionduedate > 0) {
-            $maximumextensionlength = $config->maximumrequests * $config->extensionlength * 3600;
-            $maximumextension = $duedate + $maximumextensionlength;
-            if ($maximumextension > $extensionduedate) {
-                return true;
-            }
-        }
-    }
-
-    return false;
+    return $renderer->render_request_button($cmid);
 }
