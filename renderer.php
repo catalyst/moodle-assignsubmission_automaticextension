@@ -74,7 +74,8 @@ class local_automaticextension_renderer extends plugin_renderer_base {
             'aria-describedby' => 'modal-body',
             'aria-modal' => 'true'
         ];
-        $html .= $this->output->box_start('generalbox modal modal-dialog modal-in-page show modal-extension-request', 'notice', $attributes);
+        $classes = 'generalbox modal modal-dialog modal-in-page show modal-extension-request';
+        $html .= $this->output->box_start($classes, 'notice', $attributes);
         $html .= $this->output->box_start('modal-content', 'modal-content');
 
         // Header.
@@ -84,8 +85,8 @@ class local_automaticextension_renderer extends plugin_renderer_base {
 
         // Body.
         $attributes = [
-            'role'=>'alert',
-            'data-aria-autofocus'=>'true'
+            'role' => 'alert',
+            'data-aria-autofocus' => 'true'
         ];
         $html .= $this->output->box_start('modal-body', 'modal-body', $attributes);
 
