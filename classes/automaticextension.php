@@ -118,16 +118,29 @@ class automaticextension {
      * @return boolean if extension was applied successfully
      */
     public function apply_extension() {
-        $newduedate = $this->duedate + $this->extensionlength;
-        if ($this->extensionduedate > 0) {
-            $newduedate = $this->extensionduedate + $this->extensionlength;
-        }
-
-        if (!$this->assign->save_user_extension($this->userid, $newduedate)) {
+        $maximumextensionduedate = $this->duedate + $this->maximumextensionlength;
+        if ($this->extensionduedate >= $maximumextensionduedate) {
+            // Somehow we're trying to apply an extension when the current extension is past
+            // or the same as the current extension, so let's just return false to be safe.
             return false;
         }
 
-        $this->extensionduedate = $newduedate;
+        // Calculate the new extensionduedate.
+        $extensionduedate = $this->duedate + $this->extensionlength;
+        if ($this->extensionduedate > 0) {
+            $extensionduedate = $this->extensionduedate + $this->extensionlength;
+        }
+
+        // Apply the new extensionduedate.
+        $flags = $this->assign->get_user_flags($this->userid, true);
+        $flags->extensionduedate = $extensionduedate;
+        if (!$this->assign->update_user_flags($flags)) {
+            return false;
+        }
+        $this->extensionduedate = $extensionduedate;
+
+        // Trigger the events.
+        \mod_assign\event\extension_granted::create_from_assign($this->assign, $this->userid)->trigger();
 
         $eventdata = [
             'context' => $this->assign->get_context(),
@@ -151,10 +164,12 @@ class automaticextension {
     public function can_request_extension() {
         $now = time();
 
-        if ($this->extensionlength > 0) {
+        // Check config is set.
+        if ($this->maximumrequests > 0 && $this->extensionlength > 0) {
             $withinduedate = max($this->duedate, $this->extensionduedate) > $now;
             $withinmaximumrequests = ($this->duedate + $this->maximumextensionlength) > $this->extensionduedate;
             if ($withinduedate && $withinmaximumrequests) {
+                // We are within the due date (either regular or extension) and haven't reached the maximum requests.
                 return true;
             }
         }
