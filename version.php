@@ -30,3 +30,6 @@ $plugin->release   = 2022122300;
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2014051200; // Moodle 2.7 release and upwards.
 $plugin->component = 'local_automaticextension';
+$plugin->dependencies = [
+    'theme_ncmboost' => 2020071600
+];
