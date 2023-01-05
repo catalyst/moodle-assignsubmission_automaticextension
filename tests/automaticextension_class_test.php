@@ -96,6 +96,16 @@ class automaticextension_class_test extends \advanced_testcase {
         $canrequest = $automaticextension->can_request_extension();
         $this->assertTrue($canrequest);
 
+        // Test can_request_extension returns false when the user doesn't have the capability.
+        $role = $DB->get_record('role', array('shortname' => 'student'));
+        $cap = 'assignsubmission/automaticextension:requestextension';
+        assign_capability($cap, CAP_PROHIBIT, $role->id, $assign->get_context()->id, true);
+        $automaticextension = new automaticextension($assign, $this->student->id);
+        $canrequest = $automaticextension->can_request_extension();
+        $this->assertFalse($canrequest);
+
+        assign_capability($cap, CAP_ALLOW, $role->id, $assign->get_context()->id, true);
+
         // Manually update the assignment due date to be half a day ago.
         $newduedate = time() - 43200;
         $DB->update_record('assign', (object) [

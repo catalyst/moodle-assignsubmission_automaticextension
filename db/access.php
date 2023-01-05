@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Capability definitions for this plugin.
  *
  * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
@@ -23,10 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023010500;
-$plugin->release   = 2023010500;
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2020061500; // Moodle 3.9 release and upwards.
-$plugin->component = 'assignsubmission_automaticextension';
+$capabilities = [
+    'assignsubmission/automaticextension:requestextension' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'student' => CAP_ALLOW
+        ]
+    ],
+];

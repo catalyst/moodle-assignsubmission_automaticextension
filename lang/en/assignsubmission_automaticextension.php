@@ -24,6 +24,7 @@
  */
 
 $string['accept'] = 'Accept automatic extension';
+$string['automaticextension:requestextension'] = 'Request an automatic extension';
 $string['cancel'] = 'Cancel';
 $string['event_automatic_extension_applied'] = 'Automatic extension applied';
 $string['event_automatic_extension_applied_desc'] = 'The user with \'{$a->userid}\' has applied an automatic extension for course module id \'{$a->contextinstanceid}\', extension date is {$a->extensionduedate}.';
