@@ -45,9 +45,7 @@ class assignsubmission_automaticextension_renderer extends plugin_renderer_base 
     public function render_request_button($cmid) {
         $url = new moodle_url('/mod/assign/submission/automaticextension/request.php', ['cmid' => $cmid]);
         $options = ['class' => 'singlebutton requestextensionbutton'];
-        $o .= $this->output->single_button($url, get_string('requestextension', 'assignsubmission_automaticextension'), 'get', $options);
-
-        return $o;
+        return $this->output->single_button($url, get_string('requestextension', 'assignsubmission_automaticextension'), 'get', $options);
     }
 
     /**
