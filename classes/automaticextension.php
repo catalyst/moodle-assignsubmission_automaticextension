@@ -17,13 +17,13 @@
 /**
  * This file contains the automatic extension class.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_automaticextension;
+namespace assignsubmission_automaticextension;
 
 use assign;
 
@@ -102,7 +102,7 @@ class automaticextension {
         if ($flags) {
             $this->extensionduedate = $flags->extensionduedate;
         }
-        $config = get_config('local_automaticextension');
+        $config = get_config('assignsubmission_automaticextension');
         if ($config) {
             $this->maximumrequests        = $config->maximumrequests;
             $this->extensionlength        = $config->extensionlength * 3600;
@@ -163,6 +163,13 @@ class automaticextension {
      */
     public function can_request_extension() {
         $now = time();
+
+        // Student can't request an extension if they can't view or edit a submission.
+        $canview = $this->assign->can_view_submission($this->userid);
+        $canedit = $this->assign->submissions_open($this->userid) && $this->assign->is_any_submission_plugin_enabled();
+        if (!$canview || !$canedit) {
+            return false;
+        }
 
         // Check config is set.
         if ($this->maximumrequests > 0 && $this->extensionlength > 0) {

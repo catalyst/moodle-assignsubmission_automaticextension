@@ -17,32 +17,8 @@
 /**
  * Automatic extension library.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/**
- * This is the custom hook that creates and returns the request extention button html.
- *
- * @param assign_submission_status $status
- * @return string
- */
-function local_automaticextension_get_request_button($cmid) {
-    global $PAGE, $USER;
-
-    list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'assign');
-    $context = context_module::instance($cm->id);
-
-    $assign = new \assign($context, $cm, $course);
-    $userid = $USER->id;
-    $automaticextension = new local_automaticextension\automaticextension($assign, $userid);
-    $canrequestextension = $automaticextension->can_request_extension();
-    if (!$canrequestextension) {
-        return '';
-    }
-
-    $renderer = $PAGE->get_renderer('local_automaticextension');
-    return $renderer->render_request_button($cmid);
-}

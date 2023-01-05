@@ -17,7 +17,7 @@
 /**
  * Version details.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,7 +29,4 @@ $plugin->version   = 2022122300;
 $plugin->release   = 2022122300;
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2014051200; // Moodle 2.7 release and upwards.
-$plugin->component = 'local_automaticextension';
-$plugin->dependencies = [
-    'theme_ncmboost' => 2020071600
-];
+$plugin->component = 'assignsubmission_automaticextension';

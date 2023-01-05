@@ -17,14 +17,13 @@
 /**
  * Automatic extension request page.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../../config.php");
-require_once($CFG->dirroot . "/local/automaticextension/lib.php");
+require_once("../../../../config.php");
 require_once($CFG->dirroot . "/mod/assign/locallib.php");
 
 $cmid = required_param('cmid', PARAM_INT);
@@ -42,28 +41,25 @@ $returnurl = new \moodle_url('/mod/assign/view.php', array('id' => $cmid));
 
 $userid = $USER->id;
 $assign = new \assign($context, $cm, $course);
-$canview = $assign->can_view_submission($userid);
-$canedit = $assign->submissions_open($userid) && $assign->is_any_submission_plugin_enabled();
-$automaticextension = new \local_automaticextension\automaticextension($assign, $userid);
-$canrequestextension = $automaticextension->can_request_extension();
-if (!$canview || !$canedit || !$canrequestextension) {
-    \core\notification::warning(get_string('unabletorequest', 'local_automaticextension'));
+$automaticextension = new \assignsubmission_automaticextension\automaticextension($assign, $userid);
+if (!$automaticextension->can_request_extension()) {
+    \core\notification::warning(get_string('unabletorequest', 'assignsubmission_automaticextension'));
     redirect($returnurl);
 }
 
 if (data_submitted() && $confirm && confirm_sesskey()) {
     if ($automaticextension->apply_extension($assign, $userid)) {
         $newduedate = $automaticextension->get_user_extension_due_date();
-        \core\notification::success(get_string('requestsuccess', 'local_automaticextension', $newduedate));
+        \core\notification::success(get_string('requestsuccess', 'assignsubmission_automaticextension', $newduedate));
     } else {
-        \core\notification::error(get_string('requesterror', 'local_automaticextension'));
+        \core\notification::error(get_string('requesterror', 'assignsubmission_automaticextension'));
     }
 
     redirect($returnurl);
 }
 
 $pageurl = new \moodle_url('/local/automaticextension/request.php', array('cmid' => $cmid));
-$title = get_string('extensionrequest', 'local_automaticextension');
+$title = get_string('extensionrequest', 'assignsubmission_automaticextension');
 $PAGE->set_url($pageurl);
 $PAGE->set_title($title);
 $PAGE->set_heading($course->fullname);
@@ -71,7 +67,7 @@ $PAGE->set_heading($course->fullname);
 // Print page HTML.
 echo $OUTPUT->header();
 
-$renderer = $PAGE->get_renderer('local_automaticextension');
+$renderer = $PAGE->get_renderer('assignsubmission_automaticextension');
 echo $renderer->render_request_page($assign);
 
 echo $OUTPUT->footer();

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains a renderer for the he local_automaticextension plugin
+ * This file contains a renderer for the he assignsubmission_automaticextension plugin
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,18 +25,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/local/automaticextension/lib.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
 /**
- * A custom renderer class that extends the plugin_renderer_base and is used by the local_automaticextension plugin.
+ * A custom renderer class that extends the plugin_renderer_base and is used by the assignsubmission_automaticextension plugin.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_automaticextension_renderer extends plugin_renderer_base {
+class assignsubmission_automaticextension_renderer extends plugin_renderer_base {
     /**
      * Renders the HTML for the request button.
      *
@@ -44,10 +43,9 @@ class local_automaticextension_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_request_button($cmid) {
-        $o  = $this->output->box_start('requestextension', null, ['style' => 'text-align:center']);
-        $url = new moodle_url('/local/automaticextension/request.php', ['cmid' => $cmid]);
-        $o .= $this->output->single_button($url, get_string('requestextension', 'local_automaticextension'), 'get');
-        $o .= $this->output->box_end();
+        $url = new moodle_url('/mod/assign/submission/automaticextension/request.php', ['cmid' => $cmid]);
+        $options = ['class' => 'singlebutton requestextensionbutton'];
+        $o .= $this->output->single_button($url, get_string('requestextension', 'assignsubmission_automaticextension'), 'get', $options);
 
         return $o;
     }
@@ -80,7 +78,7 @@ class local_automaticextension_renderer extends plugin_renderer_base {
 
         // Header.
         $html .= $this->output->box_start('modal-header p-x-1', 'modal-header');
-        $html .= html_writer::tag('h3', get_string('extensionrequest', 'local_automaticextension'));
+        $html .= html_writer::tag('h3', get_string('extensionrequest', 'assignsubmission_automaticextension'));
         $html .= $this->output->box_end();
 
         // Body.
@@ -96,7 +94,7 @@ class local_automaticextension_renderer extends plugin_renderer_base {
         $html .= html_writer::tag('h5', $assigntitle);
         $html .= html_writer::empty_tag('hr');
 
-        $conditions = get_config('local_automaticextension', 'conditions');
+        $conditions = get_config('assignsubmission_automaticextension', 'conditions');
         $html .= clean_text($conditions);
 
         $html .= $this->output->box_end();
@@ -104,10 +102,10 @@ class local_automaticextension_renderer extends plugin_renderer_base {
         // Footer.
         $html .= $this->box_start('modal-footer', 'modal-footer');
         $cancelurl = new moodle_url('/mod/assign/view.php', ['id' => $cm->id]);
-        $cancel = new single_button($cancelurl, get_string('cancel', 'local_automaticextension'), 'get');
+        $cancel = new single_button($cancelurl, get_string('cancel', 'assignsubmission_automaticextension'), 'get');
         $params = ['cmid' => $cm->id, 'confirm' => 1];
         $confirmurl = new moodle_url('/local/automaticextension/request.php', $params);
-        $confirm = new single_button($confirmurl, get_string('accept', 'local_automaticextension'), 'post', true);
+        $confirm = new single_button($confirmurl, get_string('accept', 'assignsubmission_automaticextension'), 'post', true);
         $html .= html_writer::tag('div', $this->render($confirm) . $this->render($cancel), ['class' => 'buttons']);
         $html .= $this->output->box_end();
 

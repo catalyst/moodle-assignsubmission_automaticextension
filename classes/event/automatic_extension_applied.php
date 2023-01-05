@@ -17,13 +17,13 @@
 /**
  * Automatic extension applied event.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_automaticextension\event;
+namespace assignsubmission_automaticextension\event;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -51,7 +51,7 @@ class automatic_extension_applied extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_automatic_extension_applied', 'local_automaticextension');
+        return get_string('event_automatic_extension_applied', 'assignsubmission_automaticextension');
     }
 
     /**
@@ -64,6 +64,6 @@ class automatic_extension_applied extends \core\event\base {
         $obj->contextinstanceid = $this->contextinstanceid;
         $obj->extensionduedate = userdate($this->other['extensionduedate'], get_string('strftimedaydatetime', 'langconfig'));
 
-        return get_string('event_automatic_extension_applied_desc', 'local_automaticextension', $obj);
+        return get_string('event_automatic_extension_applied_desc', 'assignsubmission_automaticextension', $obj);
     }
 }

@@ -17,13 +17,13 @@
 /**
  * This file contains the class that handles testing of the block assess frequency class.
  *
- * @package    local_automaticextension
+ * @package    assignsubmission_automaticextension
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_automaticextension;
+namespace assignsubmission_automaticextension;
 
 use assign;
 use context_module;
@@ -68,22 +68,22 @@ class automaticextension_class_testcase extends \advanced_testcase {
         $assign = new assign($this->context, $this->cm, $this->course);
 
         // Test can_request_extension returns false when maximumrequests is set to 0.
-        set_config('maximumrequests', 0, 'local_automaticextension');
-        set_config('extensionlength', 24, 'local_automaticextension');
+        set_config('maximumrequests', 0, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertFalse($canrequest);
 
         // Test can_request_extension returns false when extensionlength is set to 0.
-        set_config('maximumrequests', 1, 'local_automaticextension');
-        set_config('extensionlength', 0, 'local_automaticextension');
+        set_config('maximumrequests', 1, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 0, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertFalse($canrequest);
 
         // Test can_request_extension returns true when the configs are set and the due date hasn't been reached yet.
-        set_config('maximumrequests', 1, 'local_automaticextension');
-        set_config('extensionlength', 24, 'local_automaticextension');
+        set_config('maximumrequests', 1, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertTrue($canrequest);
@@ -113,7 +113,7 @@ class automaticextension_class_testcase extends \advanced_testcase {
         $this->assertFalse($canrequest);
 
         // Test can_request_extension returns true if extension hasn't passed and max requests hasn't been reached.
-        set_config('maximumrequests', 2, 'local_automaticextension');
+        set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertTrue($canrequest);
@@ -136,8 +136,8 @@ class automaticextension_class_testcase extends \advanced_testcase {
     public function test_apply_extension() {
         global $DB;
 
-        set_config('maximumrequests', 2, 'local_automaticextension');
-        set_config('extensionlength', 24, 'local_automaticextension');
+        set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
 
         $assign = new assign($this->context, $this->cm, $this->course);
         $automaticextension = new automaticextension($assign, $this->student->id);
@@ -156,7 +156,7 @@ class automaticextension_class_testcase extends \advanced_testcase {
         $event0 = $events[0];
         $expected = 'mod_assign\event\extension_granted';
         $this->assertEquals($expected, get_class($events[0]));
-        $expected = 'local_automaticextension\event\automatic_extension_applied';
+        $expected = 'assignsubmission_automaticextension\event\automatic_extension_applied';
         $this->assertEquals($expected, get_class($events[1]));
 
         // Test apply_extension a second time sets the extensionduedate to 2 days after the due date.
