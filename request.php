@@ -58,7 +58,7 @@ if (data_submitted() && $confirm && confirm_sesskey()) {
     redirect($returnurl);
 }
 
-$pageurl = new \moodle_url('/local/automaticextension/request.php', array('cmid' => $cmid));
+$pageurl = new \moodle_url('/mod/assign/submission/automaticextension/request.php', array('cmid' => $cmid));
 $title = get_string('extensionrequest', 'assignsubmission_automaticextension');
 $PAGE->set_url($pageurl);
 $PAGE->set_title($title);

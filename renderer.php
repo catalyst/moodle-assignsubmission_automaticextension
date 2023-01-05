@@ -104,7 +104,7 @@ class assignsubmission_automaticextension_renderer extends plugin_renderer_base 
         $cancelurl = new moodle_url('/mod/assign/view.php', ['id' => $cm->id]);
         $cancel = new single_button($cancelurl, get_string('cancel', 'assignsubmission_automaticextension'), 'get');
         $params = ['cmid' => $cm->id, 'confirm' => 1];
-        $confirmurl = new moodle_url('/local/automaticextension/request.php', $params);
+        $confirmurl = new moodle_url('/mod/assign/submission/automaticextension/request.php', $params);
         $confirm = new single_button($confirmurl, get_string('accept', 'assignsubmission_automaticextension'), 'post', true);
         $html .= html_writer::tag('div', $this->render($confirm) . $this->render($cancel), ['class' => 'buttons']);
         $html .= $this->output->box_end();
