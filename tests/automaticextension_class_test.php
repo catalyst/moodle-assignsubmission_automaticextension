@@ -28,8 +28,6 @@ namespace assignsubmission_automaticextension;
 use assign;
 use context_module;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This file contains the class that handles testing of the block assess frequency class.
  *
@@ -37,12 +35,12 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class automaticextension_class_testcase extends \advanced_testcase {
+class automaticextension_class_test extends \advanced_testcase {
 
     /**
      * Initial set up.
      */
-    protected function setUp() {
+    protected function setUp(): void {
         global $CFG;
 
         parent::setup();

@@ -23,14 +23,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+$plugin = 'assignsubmission_automaticextension';
+
 $name = new lang_string('settings:conditions', 'assignsubmission_automaticextension');
 $description = new lang_string('settings:conditions_help', 'assignsubmission_automaticextension');
-$settings->add(new admin_setting_confightmleditor('assignsubmission_automaticextension/conditions', $name, $description, '', PARAM_RAW));
+$settings->add(new admin_setting_confightmleditor($plugin . '/conditions', $name, $description, '', PARAM_RAW));
 
 $name = new lang_string('settings:maximumrequests', 'assignsubmission_automaticextension');
 $description = new lang_string('settings:maximumrequests_help', 'assignsubmission_automaticextension');
-$settings->add(new admin_setting_configtext('assignsubmission_automaticextension/maximumrequests', $name, $description, 1, PARAM_INT));
+$settings->add(new admin_setting_configtext($plugin . '/maximumrequests', $name, $description, 1, PARAM_INT));
 
 $name = new lang_string('settings:extensionlength', 'assignsubmission_automaticextension');
 $description = new lang_string('settings:extensionlength_help', 'assignsubmission_automaticextension');
-$settings->add(new admin_setting_configtext('assignsubmission_automaticextension/extensionlength', $name, $description, 24, PARAM_INT));
+$settings->add(new admin_setting_configtext($plugin . '/extensionlength', $name, $description, 24, PARAM_INT));

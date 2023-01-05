@@ -27,8 +27,6 @@ namespace assignsubmission_automaticextension;
 
 use assign;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The automatic extension class.
  *

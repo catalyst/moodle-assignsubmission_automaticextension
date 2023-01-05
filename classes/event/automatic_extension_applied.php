@@ -25,8 +25,6 @@
 
 namespace assignsubmission_automaticextension\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Automatic extension applied event.
  *
