@@ -6,5 +6,5 @@ This plugin allows students to request an automatic extension. A "Request extens
 
 ## Site settings
 - **conditions** - HTML that will be presented to the student on the confirmation screen when the student requests an extension
-- **maximumrequests** - the number of extension requests a student can make (setting this to 0 will disable the plugin)
-- **extensionlength** - the length of each extension in hours, each subsequent request will increase the extension by this amount (setting this to 0 will disable the plugin)
+- **maximumrequests** - the number of extension requests a user can make for each assignment (setting this to 0 will disable the plugin)
+- **extensionlength** - the length of each extension period in hours, each subsequent request will increase the extension by this amount (setting this to 0 will disable the plugin)
