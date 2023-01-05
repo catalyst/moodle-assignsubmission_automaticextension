@@ -28,5 +28,5 @@ defined('MOODLE_INTERNAL') || die;
 $plugin->version   = 2022122300;
 $plugin->release   = 2022122300;
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2014051200; // Moodle 2.7 release and upwards.
+$plugin->requires  = 2020061500; // Moodle 3.9 release and upwards.
 $plugin->component = 'assignsubmission_automaticextension';
