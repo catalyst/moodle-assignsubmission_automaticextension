@@ -27,6 +27,11 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin = 'assignsubmission_automaticextension';
 
+// Note: This is on by default.
+$name = new lang_string('settings:default', 'assignsubmission_automaticextension');
+$description = new lang_string('settings:default_help', 'assignsubmission_automaticextension');
+$settings->add(new admin_setting_configcheckbox($plugin . '/default', $name, $description, 1));
+
 $name = new lang_string('settings:conditions', 'assignsubmission_automaticextension');
 $description = new lang_string('settings:conditions_help', 'assignsubmission_automaticextension');
 $settings->add(new admin_setting_confightmleditor($plugin . '/conditions', $name, $description, '', PARAM_RAW));

@@ -37,6 +37,9 @@
  */
 class assign_submission_automaticextension extends assign_submission_plugin {
 
+    /** @var boolean|null $enabledcache Cached lookup of the is_enabled function */
+    private $enabledcache = null;
+
     /**
      * Get the name of the automatic extension plugin
      * @return string
@@ -98,11 +101,34 @@ class assign_submission_automaticextension extends assign_submission_plugin {
      * @return bool
      */
     public function is_enabled() {
-        global $USER;
+        global $PAGE, $USER;
 
-        $userid = $USER->id;
-        $automaticextension = new assignsubmission_automaticextension\automaticextension($this->assignment, $userid);
-        return $automaticextension->can_request_extension();
+        if ($this->enabledcache === null) {
+            $this->enabledcache = $this->get_config('enabled');
+
+            // This bit could probably be done better, 0 means truly disabled,
+            // false means the config hasn't been saved (existing assignment before plugin installation).
+            if ($this->assignment->has_instance() && $this->enabledcache === false) {
+                // Config doesn't exist yet, let's use the site default and save the config.
+                $default = get_config('default', 'assignsubmission_automaticextension');
+                if ($default) {
+                    $this->enable();
+                } else {
+                    $this->disable();
+                }
+            }
+        }
+
+        // Bit of a hacky way to do it, but check if we're on the assign edit page using the pagetype.
+        $oneditpage = isset($PAGE->pagetype) && $PAGE->pagetype == 'mod-assign-mod';
+
+        // Only check the request conditions if we're not editing and the plugin is enabled for this assign.
+        if (!$oneditpage && $this->enabledcache) {
+            $automaticextension = new assignsubmission_automaticextension\automaticextension($this->assignment, $USER->id);
+            return $automaticextension->can_request_extension();
+        }
+
+        return $this->enabledcache;
     }
 
     /**
@@ -111,7 +137,7 @@ class assign_submission_automaticextension extends assign_submission_plugin {
      * @return bool
      */
     public function is_configurable() {
-        return false;
+        return true;
     }
 
     /**

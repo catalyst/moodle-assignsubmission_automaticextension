@@ -26,6 +26,8 @@
 $string['accept'] = 'Accept automatic extension';
 $string['automaticextension:requestextension'] = 'Request an automatic extension';
 $string['cancel'] = 'Cancel';
+$string['enabled'] = 'Automatic extension';
+$string['enabled_help'] = 'If enabled, students can request an automatic extension.';
 $string['event_automatic_extension_applied'] = 'Automatic extension applied';
 $string['event_automatic_extension_applied_desc'] = 'The user with \'{$a->userid}\' has applied an automatic extension for course module id \'{$a->contextinstanceid}\', extension date is {$a->extensionduedate}.';
 $string['extensionrequest'] = 'Extension Request';
@@ -34,6 +36,8 @@ $string['privacy:metadata'] = 'The automatic extension submission plugin does no
 $string['requesterror'] = 'There was an issue applying your automatic extension, please contact your instructor.';
 $string['requestextension'] = 'Request extension';
 $string['requestsuccess'] = 'Your automatic extension has been applied. Your new due date is {$a}.';
+$string['settings:default'] = 'Enabled by default';
+$string['settings:default_help'] = 'If set, automatic extension will be enabled by default for all new and existing assignments, giving students the ability to request an automatic extension.';
 $string['settings:conditions'] = 'Condition details';
 $string['settings:conditions_help'] = 'The extension condition details to be shown to students when they request an extension';
 $string['settings:extensionlength'] = 'Extension length (hours)';
