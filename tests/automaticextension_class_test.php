@@ -57,6 +57,16 @@ class automaticextension_class_testcase extends \advanced_testcase {
         list ($course, $cm) = get_course_and_cm_from_cmid($this->assignment->cmid, 'assign');
         $this->cm = $cm;
         $this->context = context_module::instance($cm->id);
+
+        // Enable the online text submission plugin.
+        $assign = new assign($this->context, $this->cm, $this->course);
+        $submissionplugins = $assign->get_submission_plugins();
+        foreach ($submissionplugins as $plugin) {
+            if ($plugin->get_type() === 'onlinetext') {
+                $plugin->enable();
+                break;
+            }
+        }
     }
 
     /**
