@@ -120,7 +120,7 @@ class assign_submission_automaticextension extends assign_submission_plugin {
         }
 
         // Bit of a hacky way to do it, but check if we're on the assign edit page using the pagetype.
-        $oneditpage = isset($PAGE->pagetype) && $PAGE->pagetype == 'mod-assign-mod';
+        $oneditpage = !is_null($PAGE) && $PAGE->pagetype == 'mod-assign-mod';
 
         // Only check the request conditions if we're not editing and the plugin is enabled for this assign.
         if (!$oneditpage && $this->enabledcache) {
