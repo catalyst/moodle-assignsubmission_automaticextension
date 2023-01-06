@@ -77,7 +77,7 @@ class automaticextension_class_test extends \advanced_testcase {
 
         // Test can_request_extension returns false when maximumrequests is set to 0.
         set_config('maximumrequests', 0, 'assignsubmission_automaticextension');
-        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertFalse($canrequest);
@@ -91,7 +91,7 @@ class automaticextension_class_test extends \advanced_testcase {
 
         // Test can_request_extension returns true when the configs are set and the due date hasn't been reached yet.
         set_config('maximumrequests', 1, 'assignsubmission_automaticextension');
-        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertTrue($canrequest);
@@ -155,7 +155,7 @@ class automaticextension_class_test extends \advanced_testcase {
         global $DB;
 
         set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
-        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
 
         $assign = new assign($this->context, $this->cm, $this->course);
         $automaticextension = new automaticextension($assign, $this->student->id);

@@ -42,4 +42,4 @@ $settings->add(new admin_setting_configtext($plugin . '/maximumrequests', $name,
 
 $name = new lang_string('settings:extensionlength', 'assignsubmission_automaticextension');
 $description = new lang_string('settings:extensionlength_help', 'assignsubmission_automaticextension');
-$settings->add(new admin_setting_configtext($plugin . '/extensionlength', $name, $description, 24, PARAM_INT));
+$settings->add(new admin_setting_configduration($plugin . '/extensionlength', $name, $description, 86400));

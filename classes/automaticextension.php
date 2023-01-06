@@ -103,7 +103,7 @@ class automaticextension {
         $config = get_config('assignsubmission_automaticextension');
         if ($config) {
             $this->maximumrequests        = $config->maximumrequests;
-            $this->extensionlength        = $config->extensionlength * 3600;
+            $this->extensionlength        = $config->extensionlength;
             $this->maximumextensionlength = $this->maximumrequests * $this->extensionlength;
         }
     }
