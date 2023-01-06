@@ -28,8 +28,6 @@ namespace assignsubmission_automaticextension;
 use assign;
 use context_module;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This file contains the class that handles testing of the block assess frequency class.
  *
@@ -37,12 +35,12 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class automaticextension_class_testcase extends \advanced_testcase {
+class automaticextension_class_test extends \advanced_testcase {
 
     /**
      * Initial set up.
      */
-    protected function setUp() {
+    protected function setUp(): void {
         global $CFG;
 
         parent::setup();
@@ -79,7 +77,7 @@ class automaticextension_class_testcase extends \advanced_testcase {
 
         // Test can_request_extension returns false when maximumrequests is set to 0.
         set_config('maximumrequests', 0, 'assignsubmission_automaticextension');
-        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertFalse($canrequest);
@@ -93,10 +91,20 @@ class automaticextension_class_testcase extends \advanced_testcase {
 
         // Test can_request_extension returns true when the configs are set and the due date hasn't been reached yet.
         set_config('maximumrequests', 1, 'assignsubmission_automaticextension');
-        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertTrue($canrequest);
+
+        // Test can_request_extension returns false when the user doesn't have the capability.
+        $role = $DB->get_record('role', array('shortname' => 'student'));
+        $cap = 'assignsubmission/automaticextension:requestextension';
+        assign_capability($cap, CAP_PROHIBIT, $role->id, $assign->get_context()->id, true);
+        $automaticextension = new automaticextension($assign, $this->student->id);
+        $canrequest = $automaticextension->can_request_extension();
+        $this->assertFalse($canrequest);
+
+        assign_capability($cap, CAP_ALLOW, $role->id, $assign->get_context()->id, true);
 
         // Manually update the assignment due date to be half a day ago.
         $newduedate = time() - 43200;
@@ -147,7 +155,7 @@ class automaticextension_class_testcase extends \advanced_testcase {
         global $DB;
 
         set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
-        set_config('extensionlength', 24, 'assignsubmission_automaticextension');
+        set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
 
         $assign = new assign($this->context, $this->cm, $this->course);
         $automaticextension = new automaticextension($assign, $this->student->id);

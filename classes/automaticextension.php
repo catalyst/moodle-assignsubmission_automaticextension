@@ -27,8 +27,6 @@ namespace assignsubmission_automaticextension;
 
 use assign;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The automatic extension class.
  *
@@ -105,7 +103,7 @@ class automaticextension {
         $config = get_config('assignsubmission_automaticextension');
         if ($config) {
             $this->maximumrequests        = $config->maximumrequests;
-            $this->extensionlength        = $config->extensionlength * 3600;
+            $this->extensionlength        = $config->extensionlength;
             $this->maximumextensionlength = $this->maximumrequests * $this->extensionlength;
         }
     }
@@ -162,7 +160,11 @@ class automaticextension {
      * @return boolean
      */
     public function can_request_extension() {
-        $now = time();
+        // Check for capability.
+        $cap = 'assignsubmission/automaticextension:requestextension';
+        if (!has_capability($cap, $this->assign->get_context(), $this->userid)) {
+            return false;
+        }
 
         // Student can't request an extension if they can't view or edit a submission.
         $canview = $this->assign->can_view_submission($this->userid);
@@ -173,6 +175,7 @@ class automaticextension {
 
         // Check config is set.
         if ($this->maximumrequests > 0 && $this->extensionlength > 0) {
+            $now = time();
             $withinduedate = max($this->duedate, $this->extensionduedate) > $now;
             $withinmaximumrequests = ($this->duedate + $this->maximumextensionlength) > $this->extensionduedate;
             if ($withinduedate && $withinmaximumrequests) {
