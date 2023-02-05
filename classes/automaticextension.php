@@ -34,7 +34,6 @@ use assign;
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class automaticextension {
 
     /**
@@ -89,7 +88,7 @@ class automaticextension {
     /**
      * Class constructor.
      *
-     * @param object $assign the assign object
+     * @param assign $assign the assign object
      * @param integer $userid the user id
      */
     public function __construct(assign $assign, $userid) {
@@ -111,8 +110,6 @@ class automaticextension {
     /**
      * Apply the automatic extension.
      *
-     * @param object $assign the assign object
-     * @param integer $userid the user to apply the extension to
      * @return boolean if extension was applied successfully
      */
     public function apply_extension() {
@@ -155,8 +152,6 @@ class automaticextension {
     /**
      * Check if the user is able to request an extension.
      *
-     * @param integer $duedate the due date
-     * @param integer $extensionduedate the extension due date
      * @return boolean
      */
     public function can_request_extension() {

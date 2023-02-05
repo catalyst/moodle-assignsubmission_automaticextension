@@ -34,7 +34,7 @@ use context_module;
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass assignsubmission_automaticextension/automaticextension
+ * @coversDefaultClass \assignsubmission_automaticextension\automaticextension
  */
 class automaticextension_class_test extends \advanced_testcase {
 

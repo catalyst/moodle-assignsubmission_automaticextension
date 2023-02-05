@@ -52,7 +52,7 @@ class assignsubmission_automaticextension_renderer extends plugin_renderer_base 
     /**
      * Renders the HTML for the request page.
      *
-     * @param object $assign the assign object
+     * @param assign $assign the assign object
      * @return string
      */
     public function render_request_page(assign $assign) {
