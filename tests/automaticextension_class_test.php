@@ -34,6 +34,7 @@ use context_module;
  * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
  * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @coversDefaultClass assignsubmission_automaticextension/automaticextension
  */
 class automaticextension_class_test extends \advanced_testcase {
 
@@ -69,6 +70,7 @@ class automaticextension_class_test extends \advanced_testcase {
 
     /**
      * Test the can_request_extension function.
+     * @covers ::can_request_extension
      */
     public function test_can_request_extension() {
         global $DB;
@@ -150,6 +152,7 @@ class automaticextension_class_test extends \advanced_testcase {
 
     /**
      * Test the apply_extension function.
+     * @covers ::apply_extension
      */
     public function test_apply_extension() {
         global $DB;
