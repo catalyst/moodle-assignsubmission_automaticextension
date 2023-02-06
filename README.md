@@ -1,6 +1,6 @@
 Automatic extension - Moodle assignsubmission plugin
 ====================
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/catalyst/moodle-assignsubmission_automaticextension/ci/main?label=ci)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/catalyst/moodle-assignsubmission_automaticextension/ci.yml?branch=main&label=ci)
 
 This plugin allows students to request an automatic extension. A "Request extension" button will be presented on the assignment view page, pressing the button will take the student to a confirmation page, after confirming an extension will be applied using the site settings.
 
