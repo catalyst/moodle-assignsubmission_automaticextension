@@ -93,6 +93,7 @@ class automaticextension_class_test extends \advanced_testcase {
 
         // Test can_request_extension returns true when the configs are set and the due date hasn't been reached yet.
         set_config('maximumrequests', 1, 'assignsubmission_automaticextension');
+        set_config('coursemaximumrequests', 0, 'assignsubmission_automaticextension');
         set_config('extensionlength', 86400, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
@@ -126,6 +127,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $flags = $assign->get_user_flags($this->student->id, true);
         $flags->extensionduedate = $extensionduedate;
         $assign->update_user_flags($flags);
+        $automaticextension->log_request(time());
 
         // Test can_request_extension returns false if extension hasn't passed but max requests has been reached.
         $automaticextension = new automaticextension($assign, $this->student->id);
@@ -134,17 +136,34 @@ class automaticextension_class_test extends \advanced_testcase {
 
         // Test can_request_extension returns true if extension hasn't passed and max requests hasn't been reached.
         set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
+        set_config('coursemaximumrequests', 2, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertTrue($canrequest);
+
+        // Test can_request_extension returns false if the course maximum requests has been reached.
+        set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
+        set_config('coursemaximumrequests', 1, 'assignsubmission_automaticextension');
+        $automaticextension = new automaticextension($assign, $this->student->id);
+        $canrequest = $automaticextension->can_request_extension();
+        $this->assertFalse($canrequest);
 
         // Set extension to be 2 days after due date (2 requests).
         $extensionduedate = $newduedate + 172800;
         $flags = $assign->get_user_flags($this->student->id, true);
         $flags->extensionduedate = $extensionduedate;
         $assign->update_user_flags($flags);
+        $automaticextension->log_request(time());
 
         // Test can_request_extension returns false if extension hasn't passed but max requests (2 requests) has been reached.
+        set_config('coursemaximumrequests', 0, 'assignsubmission_automaticextension');
+        $automaticextension = new automaticextension($assign, $this->student->id);
+        $canrequest = $automaticextension->can_request_extension();
+        $this->assertFalse($canrequest);
+
+        // Test can_request_extension returns false if a higher course maximum requests has been reached.
+        set_config('coursemaximumrequests', 3, 'assignsubmission_automaticextension');
+        set_config('coursemaximumrequests', 2, 'assignsubmission_automaticextension');
         $automaticextension = new automaticextension($assign, $this->student->id);
         $canrequest = $automaticextension->can_request_extension();
         $this->assertFalse($canrequest);
@@ -180,6 +199,14 @@ class automaticextension_class_test extends \advanced_testcase {
         $expected = 'assignsubmission_automaticextension\event\automatic_extension_applied';
         $this->assertEquals($expected, get_class($events[1]));
 
+        // Confirm the record is stored in the assignsubmission_automaticextension table.
+        $records = $DB->get_records('assignsubmission_automaticextension', [
+            'userid' => $this->student->id,
+            'courseid' => $this->course->id,
+            'assignid' => $assign->get_instance()->id
+        ]);
+        $this->assertCount(1, $records);
+
         // Test apply_extension a second time sets the extensionduedate to 2 days after the due date.
         $automaticextension->apply_extension();
         $expected = $this->assignment->duedate + 172800;
@@ -192,5 +219,59 @@ class automaticextension_class_test extends \advanced_testcase {
         $expected = $this->assignment->duedate + 172800;
         $flags = $assign->get_user_flags($this->student->id, true);
         $this->assertEquals($expected, $flags->extensionduedate);
+    }
+
+    /**
+     * Test the backill_requests function.
+     * @covers ::backill_requests
+     */
+    public function test_backfill_requests() {
+        global $DB;
+
+        // Setup assignment.
+        $assign = new assign($this->context, $this->cm, $this->course);
+        $extensionduedate = time() + DAYSECS;
+
+        // Enable logging.
+        $this->preventResetByRollback();
+        set_config('enabled_stores', 'logstore_standard', 'tool_log');
+        set_config('buffersize', 0, 'logstore_standard');
+        get_log_manager(true);
+        $this->setUser($this->student->id);
+
+        // Trigger the events.
+        \mod_assign\event\extension_granted::create_from_assign($assign, $this->student->id)->trigger();
+        $eventdata = [
+            'context' => $this->context,
+            'objectid' => $assign->get_instance()->id,
+            'other' => [
+                'extensionduedate' => $extensionduedate,
+            ],
+        ];
+        event\automatic_extension_applied::create($eventdata)->trigger();
+
+        // Confirm we are starting with no extensions logged.
+        $records = $DB->get_records('assignsubmission_automaticextension');
+        $this->assertCount(0, $records);
+
+        // Backfill requests.
+        \assignsubmission_automaticextension\automaticextension::backfill_requests(time() - YEARSECS);
+
+        // Confirm the record is now stored in the assignsubmission_automaticextension table.
+        $records = $DB->get_records('assignsubmission_automaticextension', [
+            'userid' => $this->student->id,
+            'courseid' => $this->course->id,
+            'assignid' => $assign->get_instance()->id
+        ]);
+        $this->assertCount(1, $records);
+
+        // Confirm that logs don't get duplicated.
+        \assignsubmission_automaticextension\automaticextension::backfill_requests(time() - YEARSECS);
+        $records = $DB->get_records('assignsubmission_automaticextension', [
+            'userid' => $this->student->id,
+            'courseid' => $this->course->id,
+            'assignid' => $assign->get_instance()->id
+        ]);
+        $this->assertCount(1, $records);
     }
 }
