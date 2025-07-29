@@ -38,13 +38,28 @@ use context_module;
  */
 class automaticextension_class_test extends \advanced_testcase {
 
+    /** @var \stdClass course object */
+    private $course;
+
+    /** @var \stdClass student object */
+    private $student;
+
+    /** @var \stdClass assignment object */
+    private $assignment;
+
+    /** @var \stdClass context object */
+    private $context;
+
+    /** @var \stdClass cm object */
+    private $cm;
+
     /**
      * Initial set up.
      */
     protected function setUp(): void {
         global $CFG;
 
-        parent::setup();
+        parent::setUp();
         $this->resetAfterTest(true);
 
         $this->course = $this->getDataGenerator()->create_course();
@@ -113,7 +128,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $newduedate = time() - 43200;
         $DB->update_record('assign', (object) [
             'id' => $assign->get_instance()->id,
-            'duedate' => $newduedate
+            'duedate' => $newduedate,
         ]);
         $assign = new assign($this->context, $this->cm, $this->course);
 
@@ -203,7 +218,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $records = $DB->get_records('assignsubmission_automaticextension', [
             'userid' => $this->student->id,
             'courseid' => $this->course->id,
-            'assignid' => $assign->get_instance()->id
+            'assignid' => $assign->get_instance()->id,
         ]);
         $this->assertCount(1, $records);
 
@@ -261,7 +276,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $records = $DB->get_records('assignsubmission_automaticextension', [
             'userid' => $this->student->id,
             'courseid' => $this->course->id,
-            'assignid' => $assign->get_instance()->id
+            'assignid' => $assign->get_instance()->id,
         ]);
         $this->assertCount(1, $records);
 
@@ -270,7 +285,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $records = $DB->get_records('assignsubmission_automaticextension', [
             'userid' => $this->student->id,
             'courseid' => $this->course->id,
-            'assignid' => $assign->get_instance()->id
+            'assignid' => $assign->get_instance()->id,
         ]);
         $this->assertCount(1, $records);
     }

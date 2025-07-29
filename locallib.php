@@ -37,7 +37,7 @@
  */
 class assign_submission_automaticextension extends assign_submission_plugin {
 
-    /** @var boolean|null $enabledcache Cached lookup of the is_enabled function */
+    /** @var bool|null $enabledcache Cached lookup of the is_enabled function */
     private $enabledcache = null;
 
     /**
