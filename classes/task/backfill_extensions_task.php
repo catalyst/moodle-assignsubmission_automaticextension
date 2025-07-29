@@ -14,19 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace assignsubmission_automaticextension\task;
+
+use core\task\adhoc_task;
+use assignsubmission_automaticextension\automaticextension;
+
 /**
- * Version details.
+ * Backfill automatic extension task
  *
  * @package    assignsubmission_automaticextension
- * @author     Rossco Hellmans <rosscohellmans@catalyst-au.net>
- * @copyright  Catalyst IT
+ * @author     Benjamin Walker <benjaminwalker@catalyst-au.net>
+ * @copyright  2025, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class backfill_extensions_task extends adhoc_task {
 
-defined('MOODLE_INTERNAL') || die;
+    /**
+     * Perform the requested operation.
+     *
+     * @return void
+     */
+    public function execute(): void {
+        global $DB;
 
-$plugin->version   = 2023010600;
-$plugin->release   = 2023010600;
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2020061500; // Moodle 3.9 release and upwards.
-$plugin->component = 'assignsubmission_automaticextension';
+        $data = $this->get_custom_data();
+        if (empty($data) || !isset($data->backfillfrom)) {
+            return;
+        }
+
+        automaticextension::backfill_requests($data->backfillfrom, $data->backfillto ?? null);
+    }
+}
