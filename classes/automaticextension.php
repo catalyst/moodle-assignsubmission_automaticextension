@@ -46,49 +46,49 @@ class automaticextension {
     /**
      * The assign due date.
      *
-     * @var integer $duedate.
+     * @var int $duedate.
      */
     private $duedate = 0;
 
     /**
      * The extension due date.
      *
-     * @var integer $extensionduedate.
+     * @var int $extensionduedate.
      */
     private $extensionduedate = 0;
 
     /**
      * The user id.
      *
-     * @var integer $userid.
+     * @var int $userid.
      */
     private $userid = null;
 
     /**
      * The maximum number of requests that can be made.
      *
-     * @var integer $maximumrequests.
+     * @var int $maximumrequests.
      */
     private $maximumrequests = 0;
 
     /**
      * The maximum number of requests that can be made per course.
      *
-     * @var integer $coursemaximumrequests.
+     * @var int $coursemaximumrequests.
      */
     private $coursemaximumrequests = 0;
 
     /**
      * The automatic extension length in seconds.
      *
-     * @var integer $extensionlength.
+     * @var int $extensionlength.
      */
     private $extensionlength = 0;
 
     /**
      * The maximum automatic extension length in seconds.
      *
-     * @var integer $maximumextensionlength.
+     * @var int $maximumextensionlength.
      */
     private $maximumextensionlength = 0;
 
@@ -96,7 +96,7 @@ class automaticextension {
      * Class constructor.
      *
      * @param assign $assign the assign object
-     * @param integer $userid the user id
+     * @param int $userid the user id
      */
     public function __construct(assign $assign, $userid) {
         $this->assign = $assign;

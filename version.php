@@ -29,4 +29,5 @@ $plugin->version   = 2023010600;
 $plugin->release   = 2023010600;
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2020061500; // Moodle 3.9 release and upwards.
+$plugin->supported = [39, 402];
 $plugin->component = 'assignsubmission_automaticextension';
