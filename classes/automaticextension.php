@@ -46,42 +46,49 @@ class automaticextension {
     /**
      * The assign due date.
      *
-     * @var integer $duedate.
+     * @var int $duedate.
      */
     private $duedate = 0;
 
     /**
      * The extension due date.
      *
-     * @var integer $extensionduedate.
+     * @var int $extensionduedate.
      */
     private $extensionduedate = 0;
 
     /**
      * The user id.
      *
-     * @var integer $userid.
+     * @var int $userid.
      */
     private $userid = null;
 
     /**
      * The maximum number of requests that can be made.
      *
-     * @var integer $maximumrequests.
+     * @var int $maximumrequests.
      */
     private $maximumrequests = 0;
 
     /**
+     * The maximum number of requests that can be made per course.
+     *
+     * @var int $coursemaximumrequests.
+     */
+    private $coursemaximumrequests = 0;
+
+    /**
      * The automatic extension length in seconds.
      *
-     * @var integer $extensionlength.
+     * @var int $extensionlength.
      */
     private $extensionlength = 0;
 
     /**
      * The maximum automatic extension length in seconds.
      *
-     * @var integer $maximumextensionlength.
+     * @var int $maximumextensionlength.
      */
     private $maximumextensionlength = 0;
 
@@ -89,7 +96,7 @@ class automaticextension {
      * Class constructor.
      *
      * @param assign $assign the assign object
-     * @param integer $userid the user id
+     * @param int $userid the user id
      */
     public function __construct(assign $assign, $userid) {
         $this->assign = $assign;
@@ -102,6 +109,7 @@ class automaticextension {
         $config = get_config('assignsubmission_automaticextension');
         if ($config) {
             $this->maximumrequests        = $config->maximumrequests;
+            $this->coursemaximumrequests  = $config->coursemaximumrequests;
             $this->extensionlength        = $config->extensionlength;
             $this->maximumextensionlength = $this->maximumrequests * $this->extensionlength;
         }
@@ -144,7 +152,11 @@ class automaticextension {
                 'extensionduedate' => $this->extensionduedate,
             ],
         ];
-        event\automatic_extension_applied::create($eventdata)->trigger();
+        $event = event\automatic_extension_applied::create($eventdata);
+        $event->trigger();
+
+        // Log the request.
+        $this->log_request($event->timecreated);
 
         return true;
     }
@@ -173,7 +185,7 @@ class automaticextension {
             $now = time();
             $withinduedate = max($this->duedate, $this->extensionduedate) > $now;
             $withinmaximumrequests = ($this->duedate + $this->maximumextensionlength) > $this->extensionduedate;
-            if ($withinduedate && $withinmaximumrequests) {
+            if ($withinduedate && $withinmaximumrequests && $this->within_course_maximum_requests()) {
                 // We are within the due date (either regular or extension) and haven't reached the maximum requests.
                 return true;
             }
@@ -183,11 +195,95 @@ class automaticextension {
     }
 
     /**
+     * Checks whether the course request limit has been reached.
+     *
+     * @return bool true if under course maximum request limit
+     */
+    public function within_course_maximum_requests(): bool {
+        global $DB;
+
+        // Course maximum request limits must be explicitly set.
+        if (empty($this->coursemaximumrequests)) {
+            return true;
+        }
+
+        $conditions = [
+            'userid' => $this->userid,
+            'courseid' => $this->assign->get_course()->id,
+        ];
+
+        $courserequests = $DB->count_records('assignsubmission_automaticextension', $conditions);
+        return $courserequests < $this->coursemaximumrequests;
+    }
+
+    /**
      * Returns the extension due date in human readable format.
      *
      * @return string
      */
     public function get_user_extension_due_date() {
         return userdate($this->extensionduedate, get_string('strftimedaydatetime', 'langconfig'));
+    }
+
+    /**
+     * Stores the request in the database.
+     *
+     * @param int $timecreated
+     * @return void
+     */
+    public function log_request(int $timecreated): void {
+        global $DB;
+
+        $DB->insert_record('assignsubmission_automaticextension', [
+            'userid' => $this->userid,
+            'courseid' => $this->assign->get_course()->id,
+            'assignid' => $this->assign->get_instance()->id,
+            'timerequested' => $timecreated,
+            'extensionduedate' => $this->extensionduedate,
+        ]);
+    }
+
+    /**
+     * Backfills request data from event data
+     *
+     * @param int $backfillfrom The timestamp to backfill from
+     * @param int|null $backfillto The timestamp to backfill to, defaults to the current time
+     * @return void
+     */
+    public static function backfill_requests(int $backfillfrom, ?int $backfillto = null): void {
+        global $DB;
+
+        // This is very slow on large sites, the backfill dates should be heavily restricted.
+        $sql = "SELECT userid, courseid, objectid, timecreated, other
+                  FROM {logstore_standard_log}
+                 WHERE component = :component AND contextlevel = :contextlevel AND edulevel = :edulevel
+                       AND timecreated > :backfillfrom AND timecreated <= :backfillto
+              ORDER BY timecreated ASC";
+        $params = [
+              'component' => 'assignsubmission_automaticextension',
+              'contextlevel' => CONTEXT_MODULE,
+              'edulevel' => \core\event\base::LEVEL_PARTICIPATING,
+              'backfillfrom' => $backfillfrom,
+              'backfillto' => isset($backfillto) ? $backfillto : time(),
+        ];
+
+        $extensions = $DB->get_recordset_sql($sql, $params);
+        foreach ($extensions as $extension) {
+            $other = \logstore_standard\log\store::decode_other($extension->other);
+            $record = [
+                'userid' => $extension->userid,
+                'courseid' => $extension->courseid,
+                'assignid' => $extension->objectid,
+                'timerequested' => $extension->timecreated,
+                'extensionduedate' => $other['extensionduedate'] ?? 0,
+            ];
+
+            // Ignore existing records.
+            if ($DB->record_exists('assignsubmission_automaticextension', $record)) {
+                continue;
+            }
+
+            $DB->insert_record('assignsubmission_automaticextension', $record);
+        }
     }
 }

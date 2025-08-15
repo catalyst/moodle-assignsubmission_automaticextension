@@ -48,7 +48,7 @@ if (!$automaticextension->can_request_extension()) {
 }
 
 if (data_submitted() && $confirm && confirm_sesskey()) {
-    if ($automaticextension->apply_extension($assign, $userid)) {
+    if ($automaticextension->apply_extension()) {
         $newduedate = $automaticextension->get_user_extension_due_date();
         \core\notification::success(get_string('requestsuccess', 'assignsubmission_automaticextension', $newduedate));
     } else {

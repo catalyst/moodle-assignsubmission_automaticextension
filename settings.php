@@ -40,6 +40,10 @@ $name = new lang_string('settings:maximumrequests', 'assignsubmission_automatice
 $description = new lang_string('settings:maximumrequests_help', 'assignsubmission_automaticextension');
 $settings->add(new admin_setting_configtext($plugin . '/maximumrequests', $name, $description, 1, PARAM_INT));
 
+$name = new lang_string('settings:coursemaximumrequests', 'assignsubmission_automaticextension');
+$description = new lang_string('settings:coursemaximumrequests_help', 'assignsubmission_automaticextension');
+$settings->add(new admin_setting_configtext($plugin . '/coursemaximumrequests', $name, $description, 0, PARAM_INT));
+
 $name = new lang_string('settings:extensionlength', 'assignsubmission_automaticextension');
 $description = new lang_string('settings:extensionlength_help', 'assignsubmission_automaticextension');
 $settings->add(new admin_setting_configduration($plugin . '/extensionlength', $name, $description, 86400));

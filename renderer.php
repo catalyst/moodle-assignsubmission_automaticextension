@@ -69,7 +69,7 @@ class assignsubmission_automaticextension_renderer extends plugin_renderer_base 
             'role' => 'alertdialog',
             'aria-labelledby' => 'modal-header',
             'aria-describedby' => 'modal-body',
-            'aria-modal' => 'true'
+            'aria-modal' => 'true',
         ];
         $classes = 'generalbox modal modal-dialog modal-in-page show modal-extension-request';
         $html .= $this->output->box_start($classes, 'notice', $attributes);
@@ -83,7 +83,7 @@ class assignsubmission_automaticextension_renderer extends plugin_renderer_base 
         // Body.
         $attributes = [
             'role' => 'alert',
-            'data-aria-autofocus' => 'true'
+            'data-aria-autofocus' => 'true',
         ];
         $html .= $this->output->box_start('modal-body', 'modal-body', $attributes);
 
