@@ -36,8 +36,7 @@ use context_module;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @coversDefaultClass \assignsubmission_automaticextension\automaticextension
  */
-class automaticextension_class_test extends \advanced_testcase {
-
+final class automaticextension_class_test extends \advanced_testcase {
     /** @var \stdClass course object */
     private $course;
 
@@ -68,7 +67,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $assigngenerator = $this->getDataGenerator()->get_plugin_generator('mod_assign');
         $duedate = time() + 86400;
         $this->assignment = $assigngenerator->create_instance(['course' => $this->course, 'duedate' => $duedate]);
-        list ($course, $cm) = get_course_and_cm_from_cmid($this->assignment->cmid, 'assign');
+         [$course, $cm] = get_course_and_cm_from_cmid($this->assignment->cmid, 'assign');
         $this->cm = $cm;
         $this->context = context_module::instance($cm->id);
 
@@ -87,7 +86,7 @@ class automaticextension_class_test extends \advanced_testcase {
      * Test the can_request_extension function.
      * @covers ::can_request_extension
      */
-    public function test_can_request_extension() {
+    public function test_can_request_extension(): void {
         global $DB;
 
         $assign = new assign($this->context, $this->cm, $this->course);
@@ -115,7 +114,7 @@ class automaticextension_class_test extends \advanced_testcase {
         $this->assertTrue($canrequest);
 
         // Test can_request_extension returns false when the user doesn't have the capability.
-        $role = $DB->get_record('role', array('shortname' => 'student'));
+        $role = $DB->get_record('role', ['shortname' => 'student']);
         $cap = 'assignsubmission/automaticextension:requestextension';
         assign_capability($cap, CAP_PROHIBIT, $role->id, $assign->get_context()->id, true);
         $automaticextension = new automaticextension($assign, $this->student->id);
@@ -188,7 +187,7 @@ class automaticextension_class_test extends \advanced_testcase {
      * Test the apply_extension function.
      * @covers ::apply_extension
      */
-    public function test_apply_extension() {
+    public function test_apply_extension(): void {
         global $DB;
 
         set_config('maximumrequests', 2, 'assignsubmission_automaticextension');
@@ -240,7 +239,7 @@ class automaticextension_class_test extends \advanced_testcase {
      * Test the backill_requests function.
      * @covers ::backill_requests
      */
-    public function test_backfill_requests() {
+    public function test_backfill_requests(): void {
         global $DB;
 
         // Setup assignment.

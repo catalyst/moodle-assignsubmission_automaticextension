@@ -28,7 +28,6 @@ use assignsubmission_automaticextension\automaticextension;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backfill_extensions_task extends adhoc_task {
-
     /**
      * Perform the requested operation.
      *
