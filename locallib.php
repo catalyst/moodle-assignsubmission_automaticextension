@@ -36,7 +36,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assign_submission_automaticextension extends assign_submission_plugin {
-
     /** @var bool|null $enabledcache Cached lookup of the is_enabled function */
     private $enabledcache = null;
 
@@ -55,13 +54,13 @@ class assign_submission_automaticextension extends assign_submission_plugin {
      * @param bool $showviewlink
      * @return string
      */
-    public function view_summary(stdClass $submission, & $showviewlink) {
+    public function view_summary(stdClass $submission, &$showviewlink) {
         global $PAGE, $USER;
 
         // Never show a link to view full submission.
         $showviewlink = false;
 
-        list ($course, $cm) = get_course_and_cm_from_instance($submission->assignment, 'assign');
+         [$course, $cm] = get_course_and_cm_from_instance($submission->assignment, 'assign');
         $context = context_module::instance($cm->id);
 
         $assign = new \assign($context, $cm, $course);

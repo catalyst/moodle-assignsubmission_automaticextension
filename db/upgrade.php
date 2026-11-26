@@ -35,7 +35,6 @@ function xmldb_assignsubmission_automaticextension_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2025072900) {
-
         // If we're upgrading from course limit feature branch rename the table, otherwise create.
         $shorttable = new xmldb_table('assign_automaticextension');
         if ($dbman->table_exists($shorttable)) {

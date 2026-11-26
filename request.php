@@ -29,7 +29,7 @@ require_once($CFG->dirroot . "/mod/assign/locallib.php");
 $cmid = required_param('cmid', PARAM_INT);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
-list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'assign');
+ [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'assign');
 
 require_login($course, true, $cm);
 
@@ -37,7 +37,7 @@ $context = context_module::instance($cm->id);
 
 require_capability('mod/assign:view', $context);
 
-$returnurl = new \moodle_url('/mod/assign/view.php', array('id' => $cmid));
+$returnurl = new \moodle_url('/mod/assign/view.php', ['id' => $cmid]);
 
 $userid = $USER->id;
 $assign = new \assign($context, $cm, $course);
@@ -58,7 +58,7 @@ if (data_submitted() && $confirm && confirm_sesskey()) {
     redirect($returnurl);
 }
 
-$pageurl = new \moodle_url('/mod/assign/submission/automaticextension/request.php', array('cmid' => $cmid));
+$pageurl = new \moodle_url('/mod/assign/submission/automaticextension/request.php', ['cmid' => $cmid]);
 $title = get_string('extensionrequest', 'assignsubmission_automaticextension');
 $PAGE->set_url($pageurl);
 $PAGE->set_title($title);
